@@ -78,7 +78,7 @@ function Sample({ userData }) {
           Welcome, {userData.firstName}
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Here's what's happening with your account today
+          Here&apos;s what&apos;s happening with your account today
         </p>
       </div>
       <div className="my-4">
@@ -170,7 +170,7 @@ function Sample({ userData }) {
                     {transaction.transactionId}
                   </TableCell>
                   <TableCell>{transaction.type}</TableCell>
-                  <TableCell>{transaction.amount}</TableCell>
+                  <TableCell>₹ {transaction.amount}</TableCell>
                   <TableCell>
                     {timestampToDate(transaction.timestamp)}
                   </TableCell>
