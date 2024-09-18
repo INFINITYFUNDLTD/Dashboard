@@ -36,7 +36,7 @@ async function handleUpdateStatus(docId, newStatus) {
     });
     console.log("Transaction status successfully updated to", newStatus);
   } catch (error) {
-    console.error("Error updating transaction status: ", error);
+    console.error("Error updating transaction status: ", docId + " " + error);
   }
 }
 
