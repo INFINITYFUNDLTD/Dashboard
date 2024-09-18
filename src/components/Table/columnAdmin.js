@@ -26,11 +26,11 @@ import {
   DialogTrigger,
 } from "../../components/ui/dialog";
 
-async function handleUpdateStatus(transactionId, newStatus) {
+async function handleUpdateStatus(docId, newStatus) {
   if (!newStatus) return;
 
   try {
-    const transactionRef = doc(db, "transactions", transactionId);
+    const transactionRef = doc(db, "transactions", docId);
     await updateDoc(transactionRef, {
       status: newStatus, // Update to the selected status
     });
@@ -212,7 +212,7 @@ export const columnsAdmin = [
           {row.getValue("status") === "rejected" && (
             <DropdownMenuItem
               onClick={() =>
-                handleUpdateStatus(row.getValue("transactionId"), "pending")
+                handleUpdateStatus(row.getValue("docId"), "pending")
               }
             >
               Set to Pending
