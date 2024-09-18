@@ -9,7 +9,7 @@ const Sendemail = async (to, subject, html) => {
       from: "admin@infinityfundltd.in",
       to: to,
       subject: subject,
-      html: html,
+      html: html, // Changed 'react' to 'html'
     });
   } catch (error) {
     console.error("Error sending email:", error);
