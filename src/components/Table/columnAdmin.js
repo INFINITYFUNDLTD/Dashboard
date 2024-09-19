@@ -26,17 +26,17 @@ import {
   DialogTrigger,
 } from "../../components/ui/dialog";
 
-async function handleUpdateStatus(docId, newStatus) {
+async function handleUpdateStatus(transactionId, newStatus) {
   if (!newStatus) return;
 
   try {
-    const transactionRef = doc(db, "transactions", docId);
+    const transactionRef = doc(db, "transactions", transactionId);
     await updateDoc(transactionRef, {
       status: newStatus, // Update to the selected status
     });
     console.log("Transaction status successfully updated to", newStatus);
   } catch (error) {
-    console.error("Error updating transaction status: ", docId + " " + error);
+    console.error("Error updating transaction status: ", error);
   }
 }
 
@@ -72,6 +72,17 @@ export const columnsAdmin = [
     ),
     cell: ({ row }) => (
       <div className="w-[80px]">{row.getValue("transactionId")}</div>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "paymentId",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Payment ID" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-[80px] uppercase">{row.getValue("paymentId")}</div>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -186,14 +197,14 @@ export const columnsAdmin = [
             <>
               <DropdownMenuItem
                 onClick={() =>
-                  handleUpdateStatus(row.getValue("docId"), "approved")
+                  handleUpdateStatus(row.getValue("transactionId"), "approved")
                 }
               >
                 Approve
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() =>
-                  handleUpdateStatus(row.getValue("docId"), "rejected")
+                  handleUpdateStatus(row.getValue("transactionId"), "rejected")
                 }
               >
                 Reject
@@ -203,7 +214,7 @@ export const columnsAdmin = [
           {row.getValue("status") === "approved" && (
             <DropdownMenuItem
               onClick={() =>
-                handleUpdateStatus(row.getValue("docId"), "pending")
+                handleUpdateStatus(row.getValue("transactionId"), "pending")
               }
             >
               Set to Pending
@@ -212,7 +223,7 @@ export const columnsAdmin = [
           {row.getValue("status") === "rejected" && (
             <DropdownMenuItem
               onClick={() =>
-                handleUpdateStatus(row.getValue("docId"), "pending")
+                handleUpdateStatus(row.getValue("transactionId"), "pending")
               }
             >
               Set to Pending
