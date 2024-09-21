@@ -164,11 +164,7 @@ export const columnsAdmin = [
     cell: ({ row }) => (
       <div className="flex items-center">
         <span>
-          {getCurrentValue(
-            row.getValue("quantity"),
-            row.getValue("price"),
-            row.getValue("pnl")
-          )}
+          {getCurrentValue(row.getValue("price"), row.getValue("pnl"))}
         </span>
       </div>
     ),
