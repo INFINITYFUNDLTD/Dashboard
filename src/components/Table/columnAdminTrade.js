@@ -6,6 +6,7 @@ import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 import { db } from "../../../firbase/clientApp";
 import { doc, updateDoc } from "firebase/firestore";
+import { useState } from "react";
 
 import {
   DropdownMenu,
@@ -61,7 +62,8 @@ async function updatePnl(transactionId, newPnl) {
       pnl: Number(newPnl), // Update the pnl field with the new value
       updatedtimestamp: new Date().toISOString(),
     });
-    console.log("Pnl successfully updated to", newPnl);
+    alert("Pnl successfully updated to " + newPnl);
+    // close the dialog
   } catch (error) {
     console.error("Error updating pnl: ", error);
   }
@@ -185,41 +187,45 @@ export const columnsAdmin = [
   {
     id: "action",
     header: "Action",
-    cell: ({ row }) => (
-      <Dialog>
-        <DialogTrigger>
-          <Button variant="ghost" size="icon">
-            <UpdateIcon className="w-4 h-4" />
-            <span className="sr-only">Actions</span>
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <span className="text-sm text-gray-500 dark:text-gray-400">
-            Current P/L : {getPnl(row.getValue("pnl"))}
-          </span>
+    cell: ({ row }) => {
+      const [isOpen, setIsOpen] = useState(false);
 
-          <Input
-            id="newPnl"
-            type="number"
-            label="New P/L"
-            placeholder="Enter new P/L"
-            onChange={(event) => {
-              const newPnl = event.target.value;
-              updatePnl(row.getValue("tradeId"), newPnl);
-            }}
-          />
-          <Button
-            variant="default"
-            onClick={() => {
-              const newPnl = document.getElementById("newPnl").value;
-              updatePnl(row.getValue("tradeId"), newPnl);
-            }}
-          >
-            Update
-          </Button>
-        </DialogContent>
-      </Dialog>
-    ),
+      const closeDialog = () => {
+        setIsOpen(false);
+      };
+
+      const handleUpdate = () => {
+        const newPnl = document.getElementById("newPnl").value;
+        updatePnl(row.getValue("tradeId"), newPnl);
+        closeDialog();
+      };
+
+      return (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            <Button variant="ghost" size="icon" onClick={() => setIsOpen(true)}>
+              <UpdateIcon className="w-4 h-4" />
+              <span className="sr-only">Actions</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              Current P/L : {getPnl(row.getValue("pnl"))}
+            </span>
+
+            <Input
+              id="newPnl"
+              type="number"
+              label="New P/L"
+              placeholder="Enter new P/L"
+            />
+            <Button variant="default" onClick={handleUpdate}>
+              Update
+            </Button>
+          </DialogContent>
+        </Dialog>
+      );
+    },
     enableSorting: false,
     enableHiding: false,
   },
