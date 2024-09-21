@@ -18,7 +18,7 @@ import {
   DropdownMenuItem,
 } from "../../components/ui/dropdown-menu";
 import { Button } from "../../components/ui/button";
-import { GearIcon, ImageIcon } from "@radix-ui/react-icons";
+import { Pencil1Icon, UpdateIcon } from "@radix-ui/react-icons";
 import {
   Dialog,
   DialogContent,
@@ -59,6 +59,7 @@ async function updatePnl(transactionId, newPnl) {
     const transactionRef = doc(db, "trades", transactionId);
     await updateDoc(transactionRef, {
       pnl: Number(newPnl), // Update the pnl field with the new value
+      updatedtimestamp: new Date().toISOString(),
     });
     console.log("Pnl successfully updated to", newPnl);
   } catch (error) {
@@ -81,18 +82,14 @@ function getCurrentValue(price, pnl) {
   return price + pnlValue;
 }
 
-export const columns = [
+export const columnsAdmin = [
   {
     id: "select",
     header: ({ table }) => (
       <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
+        checked={table.getIsAllPageRowsSelected()}
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
-        className="translate-y-[2px]"
       />
     ),
     cell: ({ row }) => (
@@ -100,7 +97,6 @@ export const columns = [
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
-        className="translate-y-[2px]"
       />
     ),
     enableSorting: false,
@@ -168,7 +164,11 @@ export const columns = [
     cell: ({ row }) => (
       <div className="flex items-center">
         <span>
-          {getCurrentValue(row.getValue("price"), row.getValue("pnl"))}
+          {getCurrentValue(
+            row.getValue("quantity"),
+            row.getValue("price"),
+            row.getValue("pnl")
+          )}
         </span>
       </div>
     ),
@@ -187,6 +187,48 @@ export const columns = [
     ),
   },
   {
+    id: "action",
+    header: "Action",
+    cell: ({ row }) => (
+      <Dialog>
+        <DialogTrigger>
+          <Button variant="ghost" size="icon">
+            <UpdateIcon className="w-4 h-4" />
+            <span className="sr-only">Actions</span>
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <span className="text-sm text-gray-500 dark:text-gray-400">
+            Current P/L : {getPnl(row.getValue("pnl"))}
+          </span>
+
+          <Input
+            id="newPnl"
+            type="number"
+            label="New P/L"
+            placeholder="Enter new P/L"
+            onChange={(event) => {
+              const newPnl = event.target.value;
+              updatePnl(row.getValue("tradeId"), newPnl);
+            }}
+          />
+          <Button
+            variant="default"
+            onClick={() => {
+              const newPnl = document.getElementById("newPnl").value;
+              updatePnl(row.getValue("tradeId"), newPnl);
+            }}
+          >
+            Update
+          </Button>
+        </DialogContent>
+      </Dialog>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+
+  {
     accessorKey: "updatedtimestamp",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="P/L Update Date" />
@@ -201,6 +243,7 @@ export const columns = [
       </div>
     ),
   },
+
   {
     accessorKey: "timestamp",
     header: ({ column }) => (
