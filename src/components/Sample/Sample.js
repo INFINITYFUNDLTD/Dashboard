@@ -18,6 +18,8 @@ function Sample({ userData }) {
   const [totalPnl, setTotalPnl] = useState(0);
   const [tpnl, setTpnl] = useState(0);
   const [totalBalance, setTotalBalance] = useState(0);
+  const [adjustment, setAdjustment] = useState(0);
+
   useEffect(() => {
     const fetchTasks = async () => {
       const q = query(
@@ -34,6 +36,8 @@ function Sample({ userData }) {
       setTasks(tasksData);
       const tpnl = calculateTotalPnl(tasksData);
       setTotalPnl(tpnl);
+      const adjustment = userData?.adjustment || 0;
+      setAdjustment(adjustment);
     };
 
     function calculateTotalPnl(tradeData) {
@@ -125,13 +129,29 @@ function Sample({ userData }) {
         {" "}
         <Card>
           <CardHeader className="flex flex-row items-c</Card>enter justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Balance</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Balance</CardTitle>
             <CreditCardIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">₹{totalBalance}</div>
             {/* <p className="text-xs text-gray-500 dark:text-gray-400">
               +20.1% from last month
+            </p> */}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">
+              Available Balance
+            </CardTitle>
+            <BarChartIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              ₹{totalBalance + adjustment}
+            </div>
+            {/* <p className="text-xs text-gray-500 dark:text-gray-400">
+              +19% from last month
             </p> */}
           </CardContent>
         </Card>
@@ -146,20 +166,6 @@ function Sample({ userData }) {
             <div className="text-2xl font-bold">{totalPnl}</div>
             {/* <p className="text-xs text-gray-500 dark:text-gray-400">
               +180.1% from last month
-            </p> */}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">
-              Portfolio Value
-            </CardTitle>
-            <BarChartIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalBalance + tpnl}</div>
-            {/* <p className="text-xs text-gray-500 dark:text-gray-400">
-              +19% from last month
             </p> */}
           </CardContent>
         </Card>

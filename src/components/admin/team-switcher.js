@@ -28,6 +28,7 @@ export default function TeamSwitcher({ className, onTeamSelect }) {
   const [totalPnl, setTotalPnl] = useState(0);
   const [totalBalance, setTotalBalance] = useState(0);
   const [portfolioValue, setPortfolioValue] = useState(0);
+  const [adjustment, setAdjustment] = useState(0);
 
   useEffect(() => {
     fetchTeams();
@@ -53,6 +54,8 @@ export default function TeamSwitcher({ className, onTeamSelect }) {
       teamsList.find((team) => team.id === selectedTeamId) || teamsList[0];
     setSelectedTeam(selectedTeam);
     onTeamSelect(selectedTeam);
+    const adjustment = selectedTeam?.adjustment || 0;
+    setAdjustment(adjustment);
   }
 
   async function fetchBalanceData() {
@@ -66,7 +69,7 @@ export default function TeamSwitcher({ className, onTeamSelect }) {
 
     setTotalPnl(tpnl);
     setTotalBalance(balance);
-    setPortfolioValue(balance + tpnl);
+    setPortfolioValue(balance + adjustment);
   }
 
   async function fetchCollectionData(collectionName) {
@@ -165,10 +168,17 @@ export default function TeamSwitcher({ className, onTeamSelect }) {
       </Popover>
       <div className=" flex-wrap gap-4 hidden md:flex">
         <MetricCard
-          title="Balance"
+          title="Total Balance"
           value={`₹${totalBalance}`}
           icon={
             <CreditCardIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+          }
+        />
+        <MetricCard
+          title="Available Balance"
+          value={`₹${portfolioValue}`}
+          icon={
+            <BarChartIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
           }
         />
         <MetricCard
@@ -176,13 +186,6 @@ export default function TeamSwitcher({ className, onTeamSelect }) {
           value={totalPnl > 0 ? `+${totalPnl}` : totalPnl}
           icon={
             <ActivityIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-          }
-        />
-        <MetricCard
-          title="Portfolio Value"
-          value={portfolioValue}
-          icon={
-            <BarChartIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
           }
         />
       </div>
