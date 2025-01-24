@@ -2,7 +2,7 @@
 import { Resend } from "resend";
 
 const Sendemail = async (to, subject, html) => {
-  const resend = new Resend(process.env.RESEND_KEY);
+  const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_KEY);
 
   try {
     await resend.emails.send({
