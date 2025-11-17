@@ -128,11 +128,10 @@ function AddMoney({ userData }) {
             </DialogTrigger>
             <DialogContent className="p-8">
               {/* Your QR code image or component goes here */}
-              <img src="/qr/qr2.png" alt="QR Code" /> 
+              <img src="/qr/qr3.png" alt="QR Code" /> 
               {/* upi id */}
               <div className="flex items-center justify-center mt-4 gap-2  ">
-                {/* <p className=" text-center">UPI ID: infinityfundltd@ibl</p> */} 
-                <p className=" text-center">UPI ID: bholaramprajapatai@ybl</p>
+                <p className=" text-center">UPI ID: infinityfundltd@ibl</p> 
                 <CopyIcon
                   onClick={() => {
                     navigator.clipboard.writeText("infinityfundltd@ibl");
